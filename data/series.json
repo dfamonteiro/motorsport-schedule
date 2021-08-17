@@ -1,0 +1,26 @@
+{
+  "Formula 1": {
+    "short": "F1",
+    "background": "#e10600",
+    "color": "#fff",
+    "file path": "Formula 1.json"
+  },
+  "Formula 2": {
+    "short": "F2",
+    "background": "#0090D0",
+    "color": "#fff",
+    "file path": "Formula 2.json"
+  },
+  "Formula 3": {
+    "short": "F3",
+    "background": "#e10600",
+    "color": "#fff",
+    "file path": "Formula 3.json"
+  },
+  "Formula E": {
+    "short": "FE",
+    "background": "#14B7ED",
+    "color": "#fff",
+    "file path": "Formula E.json"
+  }
+}
