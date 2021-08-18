@@ -22,7 +22,7 @@ function loadJson(jsonPath, callback) {
 }
 
 /**
- * Handles a series' button press
+ * Handles a series' button press (a button press can make a series' events either appear or disappear)
  * @param {Event} event 
  */
 function onButtonPressed(event) {
@@ -81,6 +81,7 @@ function genTags(json) {
         newNode.classList.add("m-1");
         newNode.id = series;
         seriesColors[series] = {color : details.color, background : details.background};
+        newNode.style.fontWeight = "bold";
         newNode.type = "button";
         newNode.addEventListener("click", onButtonPressed);
 
