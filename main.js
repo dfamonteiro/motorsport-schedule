@@ -186,7 +186,7 @@ function genDayCard(date, series) {
 
 function genSessionCards() {
     sessionCardsHTML = "";
-    for (const [date, series] of Object.entries(days)) {
+    for (const [date, series] of Object.entries(days).sort()) {
         sessionCardsHTML += genDayCard(date, series);
     }
     document.getElementById("sessions").innerHTML += sessionCardsHTML;
