@@ -3,22 +3,26 @@ const seriesColors = {};
 
 const LOCAL_STORAGE_ENTRY = "selectedSeries";
 
-/** 
- * Loads a JSON file and executes a callback on it
- * @param {string}   jsonPath The path to the JSON file
- * @param {Function} callback  The callback function that receives the the JSON object as an argument
-*/
-function loadJson(jsonPath, callback) {
-    let xhttp = new XMLHttpRequest();
-    let response;
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            response = JSON.parse(xhttp.responseText);
-            callback(response);
+/**
+ * @param {String} jsonPath The path to the JSON file
+ * @returns A promise with the JSON file
+ */
+function sendJsonRequest(jsonPath) {
+    // Code loosely based from here https://stackoverflow.com/a/31151149
+    return new Promise(function (resolve, reject) {
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                let response = JSON.parse(xhttp.responseText);
+                resolve(response);
+            }
         }
-    }
-    xhttp.open("GET", jsonPath, true);
-    xhttp.send();
+
+        xhttp.error = reject;
+        xhttp.open("GET", jsonPath, true);
+        xhttp.send();
+  });
 }
 
 /**
@@ -91,4 +95,10 @@ function genTags(json) {
     setSelectedSeries(json);
     updateSeriesColors();
 }
-loadJson("/data/series.json", genTags);
+
+sendJsonRequest("/data/series.json").then(
+    genTags, 
+    function err(e) {
+        console.log(e);
+    }
+);
