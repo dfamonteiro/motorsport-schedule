@@ -190,6 +190,8 @@ function genSessionCards() {
         sessionCardsHTML += genDayCard(date, series);
     }
     document.getElementById("sessions").innerHTML += sessionCardsHTML;
+
+    updateCountdowns();
 }
 
 sendJsonRequest("/data/series.json").then(
@@ -240,10 +242,12 @@ function genCountdownText(countDownDate) {
     }
 }
 
-var x = setInterval(function() {
+function updateCountdowns() {
     let countdowns = document.getElementsByClassName("countdown");
 
     for (let countdown of countdowns) {
         countdown.innerHTML = genCountdownText(new Date(countdown.getAttribute("start-time")));
     }
-}, 1000);
+}
+
+setInterval(updateCountdowns, 1000);
