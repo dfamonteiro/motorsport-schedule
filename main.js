@@ -144,7 +144,7 @@ function genSessionEntry(sessionName, sessionTimes) {
         timeSpan += " - " + sessionTimes.finish.slice(11, 16);
     }
     let countdown = sessionTimes.start;
-    return `<li class="list-group-item">${sessionName} <span class="fs-6 time-span">${timeSpan}</span> <span class="countdown" start-time="${countdown}"></span></li>`;
+    return `<li class="list-group-item">${sessionName} <span class="fs-6 time-span">${timeSpan}</span> <span class="countdown" start-time="${countdown}">2D 12H 32M 41S</span></li>`;
     // <li class="list-group-item">Practice 1 <span class="fs-6 time-span">10:30 - 11:30</span> <span class="countdown" start-time=""></span></li>
 }
 
@@ -175,15 +175,12 @@ function genDayCard(date, series) {
         seriesCardsHTML += genSeriesCards(seriesName, sessions.name, sessions.sessions);
     }
 
-    return `<div id="sessions" class="container-fluid d-flex flex-wrap align-items-start justify-content-center">
-              <div class="container m-3 flex-column" style="width: max-content;">
-                <h3>
-                  <strong class="mx-2">${month} ${day.getDate()}</strong>
-                </h3>
+    return `<div class="container m-3 flex-column" style="width: max-content;">
+              <h3>
+                <strong class="mx-2">${month} ${day.getDate()}</strong>
+              </h3>
                  
-                ${seriesCardsHTML}
-                 
-              </div>
+              ${seriesCardsHTML}
             </div>`;
 }
 
