@@ -1,5 +1,6 @@
 const selectedSeries = {};
 const seriesColors = {};
+const days = {};
 
 const LOCAL_STORAGE_ENTRY = "selectedSeries";
 
@@ -94,6 +95,104 @@ function genTags(json) {
 
     setSelectedSeries(json);
     updateSeriesColors();
+    loadSessions(json);
+}
+
+/**
+ * Loads the data from all the sessions of all the series
+ * @param {JSON} json object with all the series' data
+ */
+function loadSessions(json) {
+    let promises = [];
+
+    for (const [series, details] of Object.entries(json)) {
+        promises.push(sendJsonRequest("/data/" + details["file path"]));
+    }
+
+    Promise.all(promises).then((series) => {
+        for (const seriesData of series) {
+            for (const [event, eventData] of Object.entries(seriesData)) {
+                if (event === "name") {
+                    continue;
+                }
+
+                for (const [session, sessionTimes] of Object.entries(eventData)) {
+                    let start = new Date(sessionTimes.start);
+                    let datePortion = start.toISOString().slice(0, 10);
+                    
+                    if (!(datePortion in days)) {
+                        days[datePortion] = {};
+                    }
+
+                    if (!(seriesData.name in days[datePortion])) {
+                        days[datePortion][seriesData.name] = {name : event, sessions : {}};
+                    }
+
+                    days[datePortion][seriesData.name]["sessions"][session] = sessionTimes;
+                }
+            }
+        }
+
+        console.log(days);
+        genSessionCards();
+    });
+}
+
+function genSessionEntry(sessionName, sessionTimes) {
+    let timeSpan = sessionTimes.start.slice(11, 16);
+    if ("finish" in sessionTimes) {
+        timeSpan += " - " + sessionTimes.finish.slice(11, 16);
+    }
+    let countdown = sessionTimes.start;
+    return `<li class="list-group-item">${sessionName} <span class="fs-6 time-span">${timeSpan}</span> <span class="countdown" start-time="${countdown}"></span></li>`;
+    // <li class="list-group-item">Practice 1 <span class="fs-6 time-span">10:30 - 11:30</span> <span class="countdown" start-time=""></span></li>
+}
+
+function genSeriesCards(seriesName, eventName, sessions) {
+    
+    let sessionsHTML = "";
+    for (const [sessionName, sessionTimes] of Object.entries(sessions)) {
+        sessionsHTML += genSessionEntry(sessionName, sessionTimes);
+    }
+
+    return `<div class="day card mb-4">
+                <div class="card-header fs-5" style="color: ${seriesColors[seriesName].color}; background-color: ${seriesColors[seriesName].background};">
+                    ${eventName}
+                </div>
+                <ul class="list-group list-group-flush fs-5">
+                  ${sessionsHTML}
+                </ul>
+            </div>`;
+}
+
+function genDayCard(date, series) {
+    let day = new Date(date);
+    let month = day.toLocaleString('default', { month: 'long' });
+        
+    let seriesCardsHTML = "";
+
+    for (const [seriesName, sessions] of Object.entries(series)) {
+        seriesCardsHTML += genSeriesCards(seriesName, sessions.name, sessions.sessions);
+    }
+
+    return `<div id="sessions" class="container-fluid d-flex flex-wrap align-items-start justify-content-center">
+              <div class="container m-3 flex-column" style="width: max-content;">
+                <h3>
+                  <strong class="mx-2">${month} ${day.getDate()}</strong>
+                </h3>
+                 
+                ${seriesCardsHTML}
+                 
+              </div>
+            </div>`;
+}
+
+function genSessionCards() {
+    sessionCardsHTML = "";
+    for (const [date, series] of Object.entries(days)) {
+        sessionCardsHTML += genDayCard(date, series);
+    }
+    document.getElementById("sessions").innerHTML += sessionCardsHTML;
 }
 
 sendJsonRequest("/data/series.json").then(
