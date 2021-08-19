@@ -215,7 +215,28 @@ function genCountdownText(countDownDate) {
     if (distance < 0) {
         return "LIVE";
     } else {
-        return days + "D " + hours + "H " + minutes + "M " + seconds + "S";
+        // A surprisingly substantial amount of logic is required to properly display a countdown timer
+        let res = "";
+        let firstValue = true;
+
+        if (days > 0 || !firstValue) {
+            res += String(days) + "D ";
+            firstValue = false;
+        }
+        if (hours > 0 || !firstValue) {
+            res += String(hours)  .padStart(firstValue ? 0 : 2, "0") + "H ";
+            firstValue = false;
+        }
+        if (minutes > 0 || !firstValue) {
+            res += String(minutes).padStart(firstValue ? 0 : 2, "0") + "M ";
+            firstValue = false;
+        }
+        if (seconds > 0 || !firstValue) {
+            res += String(seconds).padStart(firstValue ? 0 : 2, "0") + "S";
+            firstValue = false;
+        }
+
+        return res;
     }
 }
 
@@ -225,6 +246,4 @@ var x = setInterval(function() {
     for (let countdown of countdowns) {
         countdown.innerHTML = genCountdownText(new Date(countdown.getAttribute("start-time")));
     }
-
-    console.log(countdowns);
-  }, 1000);
+}, 1000);
