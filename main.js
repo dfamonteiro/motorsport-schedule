@@ -139,13 +139,12 @@ function loadSessions(json) {
 }
 
 function genSessionEntry(sessionName, sessionTimes) {
-    let timeSpan = sessionTimes.start.slice(11, 16);
+    let timeSpan = new Date(sessionTimes.start).toString().slice(16, 21);
     if ("finish" in sessionTimes) {
-        timeSpan += " - " + sessionTimes.finish.slice(11, 16);
+        timeSpan += " - " + new Date(sessionTimes.finish).toString().slice(16, 21);
     }
     let countdown = sessionTimes.start;
     return `<li class="list-group-item">${sessionName} <span class="fs-6 time-span">${timeSpan}</span> <span class="countdown" start-time="${countdown}">2D 12H 32M 41S</span></li>`;
-    // <li class="list-group-item">Practice 1 <span class="fs-6 time-span">10:30 - 11:30</span> <span class="countdown" start-time=""></span></li>
 }
 
 function genSeriesCards(seriesName, eventName, sessions) {
