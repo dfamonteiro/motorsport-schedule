@@ -144,7 +144,7 @@ function genSessionEntry(sessionName, sessionTimes) {
         timeSpan += " - " + new Date(sessionTimes.finish).toString().slice(16, 21);
     }
     let countdown = sessionTimes.start;
-    return `<li class="list-group-item"><span class="session-name">${sessionName}</span> <span class="fs-6 time-span">${timeSpan}</span> <span class="countdown" start-time="${countdown}">2D 12H 32M 41S</span></li>`;
+    return `<li class="list-group-item d-flex"><span class="session-name">${sessionName}</span> <span class="fs-6 time-span">${timeSpan}</span> <span class="countdown" start-time="${countdown}">2D 12H 32M 41S</span></li>`;
 }
 
 function genSeriesCards(seriesName, eventName, sessions) {

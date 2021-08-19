@@ -20,3 +20,21 @@
 .time-span {
     color: #888;
 }
+
+.list-group-item {
+    align-items: center;
+}
+
+@media only screen and (max-width: 550px) {
+    .countdown {
+        margin-left: 0rem;
+    }
+
+    .time-span {
+        margin: 0.2rem 0rem;
+    }
+
+    .list-group-item {
+        flex-direction: column;
+    }
+}
