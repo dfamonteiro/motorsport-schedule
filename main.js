@@ -245,7 +245,11 @@ function updateCountdowns() {
     let countdowns = document.getElementsByClassName("countdown");
 
     for (let countdown of countdowns) {
-        countdown.innerHTML = genCountdownText(new Date(countdown.getAttribute("start-time")));
+        let countdownText = genCountdownText(new Date(countdown.getAttribute("start-time")));
+        if (countdownText === "LIVE") {
+            countdown.style.backgroundColor = "#FF0000";
+        }
+        countdown.innerHTML = countdownText;
     }
 }
 
