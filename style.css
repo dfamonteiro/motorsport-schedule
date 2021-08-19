@@ -7,6 +7,16 @@
     margin-left: 1rem;
 }
 
+.session-name {
+    padding: 0.2rem 0.5rem; 
+    float: left; 
+}
+
+.time-span {
+    padding: 0.2rem 0.5rem; 
+    vertical-align: -12%;
+}
+
 .time-span {
     color: #888;
 }
