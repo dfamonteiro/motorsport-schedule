@@ -198,3 +198,33 @@ sendJsonRequest("/data/series.json").then(
         console.log(e);
     }
 );
+
+function genCountdownText(countDownDate) {
+    // Get today's date and time
+    var now = new Date().getTime();
+  
+    // Find the distance between now and the count down date
+    var distance = countDownDate - now;
+  
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+    if (distance < 0) {
+        return "LIVE";
+    } else {
+        return days + "D " + hours + "H " + minutes + "M " + seconds + "S";
+    }
+}
+
+var x = setInterval(function() {
+    let countdowns = document.getElementsByClassName("countdown");
+
+    for (let countdown of countdowns) {
+        countdown.innerHTML = genCountdownText(new Date(countdown.getAttribute("start-time")));
+    }
+
+    console.log(countdowns);
+  }, 1000);
