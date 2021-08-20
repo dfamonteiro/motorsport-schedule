@@ -8,13 +8,12 @@
 }
 
 .session-name {
-    padding: 0.2rem 0.5rem; 
+    margin: 0.2rem 0.5rem; 
     float: left; 
 }
 
 .time-span {
-    padding: 0.2rem 0.5rem; 
-    vertical-align: -12%;
+    margin: 0.2rem 0.5rem; 
 }
 
 .time-span {
@@ -25,13 +24,17 @@
     align-items: center;
 }
 
+.list-group-item {
+    padding: 0.5rem;
+}
+
 @media only screen and (max-width: 550px) {
     .countdown {
         margin-left: 0rem;
     }
 
     .time-span {
-        margin: 0.2rem 0rem;
+        margin: 0rem 0rem 0.6rem 0rem;
     }
 
     .list-group-item {
