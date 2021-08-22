@@ -12,17 +12,11 @@
 
 .time-span {
     margin: 0.2rem 0.5rem; 
-}
-
-.time-span {
     color: #888;
 }
 
 .list-group-item {
     align-items: center;
-}
-
-.list-group-item {
     padding: 0.5rem;
     justify-content: flex-end;
 }
