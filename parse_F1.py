@@ -58,5 +58,5 @@ if __name__ == "__main__":
     url = "http://www.formula1.com/calendar/Formula_1_Official_Calendar.ics"
     events = download_sessions(url)
 
-    with open('data/F1.json', 'w') as file:
+    with open('data/Formula 1.json', 'w') as file:
         json.dump(to_json(events), file)
