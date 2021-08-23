@@ -1,2 +1,11 @@
-requests
-icalendar
+beautifulsoup4==4.9.3
+certifi==2021.5.30
+charset-normalizer==2.0.4
+icalendar==4.0.7
+idna==3.2
+python-dateutil==2.8.2
+pytz==2021.1
+requests==2.26.0
+six==1.16.0
+soupsieve==2.2.1
+urllib3==1.26.6
