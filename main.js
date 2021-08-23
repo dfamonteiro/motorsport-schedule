@@ -107,7 +107,7 @@ function loadSessions(json) {
     let promises = [];
 
     for (const [series, details] of Object.entries(json)) {
-        promises.push(sendJsonRequest("/data/" + details["file path"]));
+        promises.push(sendJsonRequest("data/" + details["file path"]));
     }
 
     Promise.all(promises).then((series) => {
@@ -233,7 +233,7 @@ function genSessionCards() {
     updateCountdowns();
 }
 
-sendJsonRequest("/data/series.json").then(
+sendJsonRequest("data/series.json").then(
     genTags, 
     function err(e) {
         console.log(e);
