@@ -2,6 +2,7 @@ from icalendar import Calendar
 import requests
 import datetime
 import json
+import pathlib
 
 import re
 from pprint import pprint
@@ -56,12 +57,15 @@ def to_json(events : List[dict]) -> dict:
 
 if __name__ == "__main__":
     url = "http://www.formula1.com/calendar/Formula_1_Official_Calendar.ics"
+    file_path = pathlib.Path(__file__).parent / 'Formula 1.json'
+
     events = download_sessions(url)
 
     GPs = {session["grand_prix_name"] for session in events}
 
     print(f"Parsed {len(events)} sessions")
     print(f"Found {len(GPs)} GPs: {GPs}")
+    print(f"Saving to {file_path}...")
 
-    with open('data/Formula 1.json', 'w') as file:
+    with open(file_path, 'w') as file:
         json.dump(to_json(events), file)
