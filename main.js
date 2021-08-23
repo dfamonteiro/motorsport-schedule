@@ -119,8 +119,9 @@ function loadSessions(json) {
 
                 for (const [session, sessionTimes] of Object.entries(eventData)) {
                     let start = new Date(sessionTimes.start);
-                    let datePortion = start.toISOString().slice(0, 10);
-                    
+                    let datePortion = new Date(start.getTime() - start.getTimezoneOffset() * 60 * 1000).toISOString().slice(0, 10);
+                    // It's important to offset the datePortion by the timezone offset, so that the day the event takes place
+                    // is correctly calculated (think, for example: 23h30 with a 1-hour offset would roll over to a new day)
                     if (!(datePortion in days)) {
                         days[datePortion] = {};
                     }
