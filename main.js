@@ -34,6 +34,7 @@ function onButtonPressed(event) {
     selectedSeries[event.target.id] = !selectedSeries[event.target.id];
     updateSeriesColors();
     window.localStorage.setItem(LOCAL_STORAGE_ENTRY, JSON.stringify(selectedSeries));
+    genSessionCards();
 }
 
 /**
@@ -138,6 +139,34 @@ function loadSessions(json) {
     });
 }
 
+function ignoreSessionEntry(sessionTimes) {
+    return Date.now() > new Date(sessionTimes.finish);
+}
+
+function ignoreSeriesCard(seriesName, sessions) {
+    if (!selectedSeries[seriesName]) {
+        return true;
+    }
+
+    for (const [sessionName, sessionTimes] of Object.entries(sessions["sessions"])) {  
+        if (!ignoreSessionEntry(sessionTimes)) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+function ignoreDayCard(series) {
+    for (const [seriesName, sessions] of Object.entries(series)) {
+        if (!ignoreSeriesCard(seriesName, sessions)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function genSessionEntry(sessionName, sessionTimes) {
     let timeSpan = new Date(sessionTimes.start).toString().slice(16, 21);
     if ("finish" in sessionTimes) {
@@ -151,6 +180,10 @@ function genSeriesCards(seriesName, eventName, sessions) {
     
     let sessionsHTML = "";
     for (const [sessionName, sessionTimes] of Object.entries(sessions)) {
+        if (ignoreSessionEntry(sessionTimes)) {
+            continue;
+        }
+
         sessionsHTML += genSessionEntry(sessionName, sessionTimes);
     }
 
@@ -171,6 +204,9 @@ function genDayCard(date, series) {
     let seriesCardsHTML = "";
 
     for (const [seriesName, sessions] of Object.entries(series)) {
+        if (ignoreSeriesCard(seriesName, sessions)) {
+            continue;
+        }
         seriesCardsHTML += genSeriesCards(seriesName, sessions.name, sessions.sessions);
     }
 
@@ -186,9 +222,12 @@ function genDayCard(date, series) {
 function genSessionCards() {
     sessionCardsHTML = "";
     for (const [date, series] of Object.entries(days).sort()) {
+        if (ignoreDayCard(series)) {
+            continue;
+        }
         sessionCardsHTML += genDayCard(date, series);
     }
-    document.getElementById("sessions").innerHTML += sessionCardsHTML;
+    document.getElementById("sessions").innerHTML = sessionCardsHTML;
 
     updateCountdowns();
 }
