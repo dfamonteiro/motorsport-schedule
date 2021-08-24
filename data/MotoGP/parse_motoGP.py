@@ -30,41 +30,37 @@ def get_races_urls() -> typing.List[typing.Tuple[str, str]]:
 def parse_race_event_page(url, GP_name) -> typing.Tuple[dict, dict, dict, dict]:
     soup = BeautifulSoup(requests.get(url).text, 'html.parser')
 
-    schedule_div = soup.find("div", {"class" : "c-event__schedule"})
-    
-    day_schedule_divs = schedule_div.find_all("div", {"class" : "c-schedule__table-container"})
-
     res = {
         "MotoGP" : {GP_name : {}},
         "Moto2"  : {GP_name : {}},
         "Moto3"  : {GP_name : {}},
         "MotoE"  : {GP_name : {}},
     }
+    
+    schedule_div = soup.find("div", {"class" : "c-event__schedule"})
+    rows = schedule_div.find_all_next("div", {"class" : "c-schedule__table-row"})
+    for row in rows:
+        time_span_div = row.find_next("div", {"class" : "c-schedule__time"})
 
-    for schedule_div in day_schedule_divs:
-        rows = schedule_div.find_all_next("div", {"class" : "c-schedule__table-row"})
-        for row in rows:
-            time_span_div = row.find_next("div", {"class" : "c-schedule__time"})
+        start   = time_span_div.find_all("span")[0]["data-ini-time"]
+        try:
+            finish  = time_span_div.find_all("span")[1]["data-end"]
+        except IndexError:
+            finish_datetime = parser.parse(start) + datetime.timedelta(hours=1)
+            finish = finish_datetime.isoformat()
 
-            start   = time_span_div.find_all("span")[0]["data-ini-time"]
-            try:
-                finish  = time_span_div.find_all("span")[1]["data-end"]
-            except IndexError:
-                finish_datetime = parser.parse(start) + datetime.timedelta(hours=1)
-                finish = finish_datetime.isoformat()
+        series  = row.find_all_next("div", {"class" : "c-schedule__table-cell"})[1].contents[0].strip()
+        session = row.find_all_next("div", {"class" : "c-schedule__table-cell"})[2].find_next("span").contents[0]
 
-            series  = row.find_all_next("div", {"class" : "c-schedule__table-cell"})[1].contents[0].strip()
-            session = row.find_all_next("div", {"class" : "c-schedule__table-cell"})[2].find_next("span").contents[0]
+        if not any(map(lambda valid_session: valid_session in session.split(), ["Practice", "Qualifying", "Race", "E-Pole"])):
+            continue
+        if "Press" in session.split():
+            continue
 
-            if not any(map(lambda valid_session: valid_session in session.split(), ["Practice", "Qualifying", "Race", "E-Pole"])):
-                continue
-            if "Press" in session.split():
-                continue
-
-            res[series][GP_name][session] = {
-                "start"  : start,
-                "finish" : finish,
-            }
+        res[series][GP_name][session] = {
+            "start"  : start,
+            "finish" : finish,
+        }
     
     if len(res["MotoE"][GP_name]) == 0:
         res["MotoE"] = {}            
