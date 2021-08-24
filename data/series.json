@@ -22,5 +22,11 @@
     "background": "#14B7ED",
     "color": "#fff",
     "file path": "Formula E/Formula E.json"
+  },
+  "Indycar": {
+    "short" : "Indycar",
+    "file path": "Indycar/Indycar.json",
+    "background": "#0086bf",
+    "color": "#fff"
   }
 }
