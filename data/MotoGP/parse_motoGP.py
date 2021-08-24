@@ -62,8 +62,10 @@ def parse_race_event_page(url, GP_name) -> typing.Tuple[dict, dict, dict, dict]:
             "finish" : finish,
         }
     
-    if len(res["MotoE"][GP_name]) == 0:
-        res["MotoE"] = {}            
+    for series in res:
+        res[series][f"{series} {GP_name}"] = res[series][GP_name]
+        del res[series][GP_name]
+
 
     return res["MotoGP"], res["Moto2"], res["Moto3"], res["MotoE"]
 

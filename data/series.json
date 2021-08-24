@@ -28,5 +28,29 @@
     "file path": "Indycar/Indycar.json",
     "background": "#0086bf",
     "color": "#fff"
+  },
+  "MotoGP": {
+    "short" : "MotoGP",
+    "file path": "MotoGP/MotoGP.json",
+    "background": "#c80502",
+    "color": "#fff"
+  },
+  "Moto2": {
+    "short" : "Moto2",
+    "file path": "MotoGP/Moto2.json",
+    "background": "#c80502",
+    "color": "#fff"
+  },
+  "Moto3": {
+    "short" : "Moto3",
+    "file path": "MotoGP/Moto3.json",
+    "background": "#c80502",
+    "color": "#fff"
+  },
+  "MotoE": {
+    "short" : "MotoE",
+    "file path": "MotoGP/MotoE.json",
+    "background": "#389e59",
+    "color": "#fff"
   }
 }
