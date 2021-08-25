@@ -3,6 +3,7 @@ const seriesColors = {};
 const days = {};
 
 const LOCAL_STORAGE_ENTRY = "selectedSeries";
+const LOCAL_STORAGE_INFO = "info";
 
 /**
  * @param {String} jsonPath The path to the JSON file
@@ -35,6 +36,9 @@ function onButtonPressed(event) {
     updateSeriesColors();
     window.localStorage.setItem(LOCAL_STORAGE_ENTRY, JSON.stringify(selectedSeries));
     genSessionCards();
+
+    window.localStorage.setItem(LOCAL_STORAGE_INFO, "");
+    // This will make the tooltip not appear next time the page is loaded
 }
 
 /**
@@ -294,3 +298,7 @@ function updateCountdowns() {
 }
 
 setInterval(updateCountdowns, 1000);
+
+if (window.localStorage.getItem(LOCAL_STORAGE_INFO) !== null) {
+    document.getElementById("tooltip").classList.add("d-none");
+}
