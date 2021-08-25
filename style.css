@@ -39,6 +39,10 @@ div header p ::selection {
     color: #212529;
 }
 
+.day .card-header {
+    text-align: center;
+}
+
 @media only screen and (max-width: 550px) {
     .countdown {
         margin-left: 0rem;
