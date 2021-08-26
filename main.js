@@ -144,10 +144,17 @@ function loadSessions(json) {
     });
 }
 
+/**
+ * Ignore the session if we're past the finish time
+ */
 function ignoreSessionEntry(sessionTimes) {
     return Date.now() > new Date(sessionTimes.finish);
 }
 
+/**
+ * Ignore the series card if either the series is not meant to be displayed or
+ * there aren't any sessions meant to be displayed
+ */
 function ignoreSeriesCard(seriesName, sessions) {
     if (!selectedSeries[seriesName]) {
         return true;
@@ -162,6 +169,9 @@ function ignoreSeriesCard(seriesName, sessions) {
     return true;
 }
 
+/**
+ * Ignore day if series aren't meant to be displayed 
+ */
 function ignoreDayCard(series) {
     for (const [seriesName, sessions] of Object.entries(series)) {
         if (!ignoreSeriesCard(seriesName, sessions)) {
@@ -224,6 +234,9 @@ function genDayCard(date, series) {
             </div>`;
 }
 
+/**
+ * Generate the countdowns html
+ */
 function genSessionCards() {
     sessionCardsHTML = "";
     for (const [date, series] of Object.entries(days).sort()) {
@@ -244,6 +257,9 @@ sendJsonRequest("data/series.json").then(
     }
 );
 
+/**
+ * Generates the countdown text "16D 11H 31M 40S"
+ */
 function genCountdownText(countDownDate) {
     // Get today's date and time
     var now = new Date().getTime();
@@ -291,7 +307,7 @@ function updateCountdowns() {
     for (let countdown of countdowns) {
         let countdownText = genCountdownText(new Date(countdown.getAttribute("start-time")));
         if (countdownText === "LIVE") {
-            countdown.style.backgroundColor = "#FF0000";
+            countdown.style.backgroundColor = "#FF0000"; // Red "LIVE"
         }
         countdown.innerHTML = countdownText;
     }
