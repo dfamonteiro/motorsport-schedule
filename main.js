@@ -139,7 +139,6 @@ function loadSessions(json) {
             }
         }
 
-        console.log(days);
         genSessionCards();
     });
 }
