@@ -34,7 +34,9 @@ if __name__ == "__main__":
     f2_path = pathlib.Path(__file__).parent / 'Formula 2.json'
     f3_path = pathlib.Path(__file__).parent / 'Formula 3.json'
 
+    print("Parsing F2")
     with open(f2_path, 'w') as file:
         json.dump(download_sessions(2), file)
+    print("Parsing F3")
     with open(f3_path, 'w') as file:
         json.dump(download_sessions(3), file)
