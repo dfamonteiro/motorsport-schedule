@@ -1,71 +1,60 @@
-from icalendar import Calendar
+from bs4 import BeautifulSoup
 import requests
 import datetime
-import json
 import pathlib
-
 import re
+import json
 from pprint import pprint
-from typing import List
 
+def get_races_urls():
+    CALENDAR_URL = f"https://www.formula1.com/en/racing/{datetime.date.today().year}.html"
+    soup = BeautifulSoup(requests.get(CALENDAR_URL).text, 'html.parser')
 
-def uncursed(v_text) -> str:
-    "This should fix the text encoding"
-    return v_text.encode('latin1').decode('utf8')
+    res = []
+    for a in soup.find("div", {"class" : "current-listing"}).find_all("a"):
+        if f"/en/racing/{datetime.date.today().year}" in a["href"] and "TBC" not in a["href"]:
+            res.append(
+                "https://www.formula1.com" + a["href"]
+            )
+    return res
 
-def download_sessions(url : str) -> List[dict]:
+def parse_race_event_page(url) -> dict:
+    print(f"Parsing {url}...")
+    soup = BeautifulSoup(requests.get(url).text, 'html.parser')
 
-    cal = Calendar.from_ical(requests.get(url).text)
+    webpage_title = soup.find("meta", {"property" : "og:title"})["content"]
+    GP_name = re.search(r"^(.+(?:Testing|Prix))", webpage_title).group(1)
 
-    events = []
+    res = {GP_name : {}}
 
-    for event in cal.walk('vevent'):
-        if str(event["STATUS"]) != "CONFIRMED":
+    event_divs = soup.find("div", {"class" : "f1-race-hub--timetable-listings"}).children
+
+    for event_div in event_divs:
+        if event_div == "\n":
             continue
 
-        start = event["DTSTART"].dt
-        finish = event["DTEND"].dt
-        session_name =  re.search(r" (?:-|–) (.*)$", uncursed(event["SUMMARY"])).group(1) # This should uncurse the decoding
-        grand_prix_name = re.search(r"Learn more about the (.* Grand Prix|Pre-Season Test)\.", uncursed(event["DESCRIPTION"])).group(1)
-
-        events.append({
-            "grand_prix_name" : grand_prix_name, 
-            "session_name" : session_name, 
-            "start"  : start, 
-            "finish" : finish,
-        })
-    
-    return events
-
-def to_json(events : List[dict]) -> dict:
-    res = {
-        "name": "Formula 1"
-    }
-
-    for event in events:
-        grand_prix_name = event["grand_prix_name"]
-        session_name    = event["session_name"]
-
-        if grand_prix_name not in res:
-            res[grand_prix_name] = {}
-        res[grand_prix_name][session_name] = {
-            "start"  : event["start"].isoformat(), 
-            "finish" : event["finish"].isoformat(),
+        session_name = event_div.find_next("p", {"class" : "f1-timetable--title"}).contents[0]
+        offset = event_div["data-gmt-offset"]
+        start = event_div["data-start-time"]
+        finish = event_div["data-end-time"]
+        
+        res[GP_name][session_name] = {
+            "start"  : start + offset,
+            "finish" : finish + offset
         }
 
     return res
 
 if __name__ == "__main__":
-    url = "http://www.formula1.com/calendar/Formula_1_Official_Calendar.ics"
     file_path = pathlib.Path(__file__).parent / 'Formula 1.json'
+    races_urls = get_races_urls()
+    print("Found the following urls:")
+    pprint(races_urls)
 
-    events = download_sessions(url)
+    res = {"name" : "Formula 1"}
 
-    GPs = {session["grand_prix_name"] for session in events}
-
-    print(f"Parsed {len(events)} sessions")
-    print(f"Found {len(GPs)} GPs: {GPs}")
-    print(f"Saving to {file_path}...")
-
+    for url in races_urls:
+        res.update(parse_race_event_page(url))        
+    
     with open(file_path, 'w') as file:
-        json.dump(to_json(events), file)
+        json.dump(res, file)
