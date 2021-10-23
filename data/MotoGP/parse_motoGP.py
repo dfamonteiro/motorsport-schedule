@@ -20,7 +20,11 @@ def get_races_urls() -> typing.List[typing.Tuple[str, str]]:
     for div in event_divs:
         if "hidden" in div["class"]:
             continue
+        
         title = div.find_next("a", {"class" : "event_name"})
+        if "Official Test" in str(title):
+            continue
+
         url = title["href"]
         GP_name = re.search(r"\d*\s*-\s*(.*)", title.contents[0].strip()).group(1)
         urls.append((url, GP_name))
