@@ -38,6 +38,9 @@ def parse_race_event_page(url) -> dict:
         start = event_div["data-start-time"]
         finish = event_div["data-end-time"]
         
+        if "TBC" in start:
+            continue
+
         res[GP_name][session_name] = {
             "start"  : start + offset,
             "finish" : finish + offset
