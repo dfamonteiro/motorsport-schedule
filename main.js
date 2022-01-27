@@ -108,39 +108,30 @@ function genTags(json) {
  * @param {JSON} json object with all the series' data
  */
 function loadSessions(json) {
-    let promises = [];
+    for (const series in json) {
+        const seriesData = json[series]['events']
+        for (const [event, eventData] of Object.entries(seriesData)) {
 
-    for (const [series, details] of Object.entries(json)) {
-        promises.push(sendJsonRequest("data/" + details["file path"]));
-    }
+            for (const [session, sessionTimes] of Object.entries(eventData)) {
 
-    Promise.all(promises).then((series) => {
-        for (const seriesData of series) {
-            for (const [event, eventData] of Object.entries(seriesData)) {
-                if (event === "name") {
-                    continue;
+                let start = new Date(sessionTimes.start);
+                let datePortion = new Date(start.getTime() - start.getTimezoneOffset() * 60 * 1000).toISOString().slice(0, 10);
+                // It's important to offset the datePortion by the timezone offset, so that the day the event takes place
+                // is correctly calculated (think, for example: 23h30 with a 1-hour offset would roll over to a new day)
+                if (!(datePortion in days)) {
+                    days[datePortion] = {};
                 }
 
-                for (const [session, sessionTimes] of Object.entries(eventData)) {
-                    let start = new Date(sessionTimes.start);
-                    let datePortion = new Date(start.getTime() - start.getTimezoneOffset() * 60 * 1000).toISOString().slice(0, 10);
-                    // It's important to offset the datePortion by the timezone offset, so that the day the event takes place
-                    // is correctly calculated (think, for example: 23h30 with a 1-hour offset would roll over to a new day)
-                    if (!(datePortion in days)) {
-                        days[datePortion] = {};
-                    }
-
-                    if (!(seriesData.name in days[datePortion])) {
-                        days[datePortion][seriesData.name] = {name : event, sessions : {}};
-                    }
-
-                    days[datePortion][seriesData.name]["sessions"][session] = sessionTimes;
+                if (!(series in days[datePortion])) {
+                    days[datePortion][series] = {name : event, sessions : {}};
                 }
+
+                days[datePortion][series]["sessions"][session] = sessionTimes;
             }
         }
+    }
 
-        genSessionCards();
-    });
+    genSessionCards();
 }
 
 /**
@@ -249,7 +240,7 @@ function genSessionCards() {
     updateCountdowns();
 }
 
-sendJsonRequest("data/series.json").then(
+sendJsonRequest("data/data.json").then(
     genTags, 
     function err(e) {
         console.log(e);
