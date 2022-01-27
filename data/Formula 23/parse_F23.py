@@ -11,7 +11,7 @@ def download_sessions(f_number) -> dict:
 
     races = data["props"]["pageProps"]["pageData"]["Races"]
 
-    res = {"name" : f"Formula {f_number}"}
+    res = {}
 
     for race in races:
         res.update(trim_event_data(race))

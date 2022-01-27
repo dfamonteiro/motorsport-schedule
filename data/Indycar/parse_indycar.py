@@ -70,7 +70,7 @@ if __name__ == "__main__":
     print("Found the following urls:")
     pprint(races_urls)
 
-    res = {"name" : "Indycar"}
+    res = {}
 
     for url in races_urls:
         res.update(parse_race_event_page(url))

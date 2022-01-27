@@ -82,10 +82,10 @@ if __name__ == "__main__":
     print("Found the following urls:")
     pprint([url[0] for url in races_urls])
 
-    motoGP_res = {"name" : "MotoGP"}
-    moto2_res  = {"name" : "Moto2"}
-    moto3_res  = {"name" : "Moto3"}
-    motoE_res  = {"name" : "MotoE"}
+    motoGP_res = {}
+    moto2_res  = {}
+    moto3_res  = {}
+    motoE_res  = {}
 
     for url in races_urls:
         print(f"Parsing {url}...")
