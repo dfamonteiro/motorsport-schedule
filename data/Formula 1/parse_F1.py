@@ -23,7 +23,11 @@ def parse_race_event_page(url) -> dict:
     soup = BeautifulSoup(requests.get(url).text, 'html.parser')
 
     webpage_title = soup.find("meta", {"property" : "og:title"})["content"]
-    GP_name = re.search(r"^(.+(?:Testing|Prix))", webpage_title).group(1)
+    
+    try:
+        GP_name = re.search(r"^(.+(?:Testing|Prix))", webpage_title).group(1)
+    except AttributeError:
+        GP_name = webpage_title
 
     res = {GP_name : {}}
 
